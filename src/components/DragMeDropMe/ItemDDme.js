@@ -18,6 +18,7 @@ const ItemDDme = ({
                       debug,
                       coordTop,
                       coordLeft,
+                      width,
                       movingArea,
                       children,
                           style,
@@ -47,7 +48,6 @@ const ItemDDme = ({
 
 
     useEffect(() =>{
-
         if(coordLeft){
             setPositionLeft(coordLeft);
         }
@@ -210,16 +210,18 @@ const ItemDDme = ({
     const addStyleOnCapture = hasCapture && styleOnCapture ? styleOnCapture : null;
     const addClassOnCapture = hasCapture && classOnCapture ? classOnCapture : '';
 
+
     const addStyleOnMove = isDragging && styleOnMove ? styleOnMove : null;
     const addClassOnMove = isDragging && classOnMove ? classOnMove : '';
+
 
     return (<div
                 id={id}
                 ref={itemRef}
-                className={`item ${className} ${hasCapture ? 'onCapture' : ''} ${addClassOnCapture} ${addClassOnMove} ${noSelect ? 'noSelect' : ''}`}
+                className={`item ${className || ''} ${hasCapture ? 'onCapture' : ''} ${addClassOnCapture} ${addClassOnMove} ${noSelect ? 'noSelect' : ''}`}
                 style={{
-                    top:positionTop,
-                    left:positionLeft,
+                    transform: `translate3d(${positionLeft}px, ${positionTop}px, 0)`,
+                    width,
                     ...style,
                     ...addStyleOnCapture,
                     ...addStyleOnMove,
@@ -251,6 +253,7 @@ ItemDDme.prototype = {
                             PropTypes.string,
                             PropTypes.number
                                             ]),
+    width:PropTypes.number,
     coordTop:PropTypes.number,
     coordLeft:PropTypes.number,
     movingArea:PropTypes.object,

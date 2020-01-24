@@ -14,7 +14,7 @@ import './DragMeDropMe.scss';
 
 import ItemDDme from './ItemDDme';
 
-const DragMeDropMe = ({debug,callback, ...res}) => {
+const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft = 10,callback, ...res}) => {
 
     const tableRef = useRef(false);
 
@@ -33,36 +33,59 @@ const DragMeDropMe = ({debug,callback, ...res}) => {
     },[]);
 
 
-    const renderItemlist = [{id:1,data:'Praesent turpis. Fusce egestas elit eget lorem.'},
-                            {id:2,data:`Phasellus magna.Donec orci lectus  hendrerit rutrum. Nunc nec neque. Maecenas nec `},
-                            {id:3,data:`Suspendisse non nisl sit amet velit hendrerit rutrum. Nunc nec neque. Maecenas nec odio et ante tincidunt tempus. Praesent nonummy mi in odio. Fusce egestas elit eget lorem. 1`},
-        {id:4,data:'Praesent turpis. Fusce egestas elit eget lorem.turpis. Fusce egestas elit eget lorem.turpis. Fusce egestas elit eget lorem.'},
-        {id:5,data:`Phasellus magna.Donec orci lectus  hendrerit rutrum. Nunc nec neque. Maecenas nec Nunc nec neque. Maecenas nec Nunc nec neque. Maecenas nec Nunc nec neque. Maecenas nec `},
-        {id:6,data:`Suspendisse non nisl sit amet velit hendrerit rutrum. Nunc nec neque. Maecenas nec odio et ante tincidunt tempus. Praesent nonummy mi in odio. Fusce egestas elit eget lorem. 1Suspendisse non nisl sit amet velit hendrerit rutrum. Nunc nec neque. Maecenas nec odio et ante tincidunt tempus. Praesent nonummy mi in odio. Fusce egestas elit eget lorem. 2`},
+    const [ItemslistArr, setItemslistArr] = useState(Itemslist);
 
 
+    const [zIndexItem,setZIndexItem] = useState({id:false,count:ItemslistArr.length});
+
+    const handleZindex = id => () =>{
+       setZIndexItem({count:zIndexItem.count + 1,id});
+    };
 
 
+    const renderItemlist = ItemslistArr.map((itm,idx) =>{
 
-    ].map((itm,idx) =>(
+        const {id,width,coords} = itm || false;
 
-        <ItemDDme
+        const {top:coordTopD,left:coordLeftD} = coords || false;
+
+        const coordLeft = Itemslist
+                                    .slice(0,idx)
+                                    .reduce((sum, current) => {
+                                    const {width:currentW} = current || defaultWidthItem;
+                                    return sum  + currentW + columnOffsetLeft;
+                                },0);
+
+        const lockAreaLeft = coordLeft + width > tableSize.width ? tableSize.width - width - columnOffsetLeft : coordLeft + columnOffsetLeft;
+
+        const testlockAreaLeftFirst = lockAreaLeft > 0 ? lockAreaLeft : 0;
+
+        const {id:zIndexItemId, count: zIndexItemCount} = zIndexItem || false;
+
+
+        return(<ItemDDme
             key={`renderItemlist-${idx}`}
-            id={itm.id}
+            coordTop={typeof coordLeftD === 'number' && coordTopD >= 0 || 0}
+            coordLeft={typeof coordLeftD === 'number' && coordLeftD >= 0 || testlockAreaLeftFirst}
             movingArea={tableSize}
             styleOnCapture={{opacity: 0.9}}
             styleOnMove={{color:'green'}}
+            style={
+                {zIndex:  zIndexItemId === id ? zIndexItemCount : 1}
+                                    }
+            onGotCaptureCallback={handleZindex(id)}
             noSelect={true}
-            coordTop={10}
-            coordLeft={10}
+
+            {...{width,id}}
         >
-          Item id:{itm.id}
-          <br/>
+            Item id:{itm.id}
+            <br/>
             {
                 itm.data
             }
-        </ItemDDme>
-    ));
+        </ItemDDme>)
+
+    });
 
 
     return (<div className={`DragMeDropMe`}>
@@ -96,6 +119,9 @@ const DragMeDropMe = ({debug,callback, ...res}) => {
 
 DragMeDropMe.prototype = {
     debug:PropTypes.bool,
+    Itemslist:PropTypes.array,
+    defaultWidthItem:PropTypes.number,
+    columnOffsetLeft:PropTypes.number,
     callback: PropTypes.func
 };
 

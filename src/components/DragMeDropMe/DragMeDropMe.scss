@@ -25,9 +25,14 @@
   & .table{
     background: #2196F3;
     height: 80%;
-    width: 80%;
-    overflow: hidden;
-    position: absolute;
+    width: 45%;
+    overflow-x: hidden;
+    -ms-overflow-x: hidden;
+    overflow-y: auto;
+    -ms-overflow-y:auto;
+
+    position: relative;
+
   }
 
   & .item{
@@ -48,7 +53,6 @@
     width: 150px;
     min-height: 50px;
 
-    padding: 10px;
     background-color: tomato;
     color: aliceblue;
     border: 3px solid black;
