@@ -7,95 +7,84 @@
  * About:
  *
  */
-import React,{useState} from "react";
+import React,{useState, useRef, useEffect} from "react";
 import PropTypes from 'prop-types';
 
 import './DragMeDropMe.scss';
 
-const DragMeDropMe = ({callback, ...res}) => {
+import ItemDDme from './ItemDDme';
 
-    const [positionX,setPositionX] = useState(0);
+const DragMeDropMe = ({debug,callback, ...res}) => {
 
-    const [positionY,setPositionY] = useState(0);
+    const tableRef = useRef(false);
 
-    const [previousPositionX,setPreviousPositionX] = useState(0);
-
-    const [previousPositionY,setPreviousPositionY] = useState(0);
-
-    const [isDragging,setIsDragging] = useState(false);
-
-    const [hasCapture,setHasCapture] = useState(false);
+    const [tableSize,setTableSize] = useState({width:0,height:0});
 
 
+    useEffect(() => {
 
-    const extractPositionDelta = e =>{
+        const { current:tableRefCurrent } = tableRef || {offsetWidth:0,offsetHeight:0};
 
-        const left = e.pageX;
-        const top = e.pageY;
+        setTableSize({
+                                width:tableRefCurrent.offsetWidth,
+                                height:tableRefCurrent.offsetHeight
+                            });
 
-        const delta = {
-            left: left - positionX,
-            top: top - positionY,
-        };
-
-        setPreviousPositionX(left);
-        setPreviousPositionY(top);
-
-        return delta;
-    };
+    },[]);
 
 
-    const onDown = e =>{
-console.log(`onDown`,e);
-
-        setIsDragging(true);
-        e.target.setPointerCapture(e.pointerId);
-
-        extractPositionDelta(e);
-
-    };
-
-    const onMove = e =>{
-console.log(`onMove`,e);
-
-        if (!isDragging) {
-            return;
-        }
-
-        const {left, top} = extractPositionDelta(e);
-
-        setPositionY(positionY + top);
-        setPositionX( positionX + left);
-
-    };
-
-    const onUp = e => setIsDragging(false);
-
-    const onGotCapture = e => setHasCapture(true);
-
-    const onLostCapture = e => setHasCapture(false);
+    const renderItemlist = [{id:1,data:'Praesent turpis. Fusce egestas elit eget lorem.'},
+                            {id:2,data:`Phasellus magna.Donec orci lectus  hendrerit rutrum. Nunc nec neque. Maecenas nec `},
+                            {id:3,data:`Suspendisse non nisl sit amet velit hendrerit rutrum. Nunc nec neque. Maecenas nec odio et ante tincidunt tempus. Praesent nonummy mi in odio. Fusce egestas elit eget lorem. 1`},
+        {id:4,data:'Praesent turpis. Fusce egestas elit eget lorem.turpis. Fusce egestas elit eget lorem.turpis. Fusce egestas elit eget lorem.'},
+        {id:5,data:`Phasellus magna.Donec orci lectus  hendrerit rutrum. Nunc nec neque. Maecenas nec Nunc nec neque. Maecenas nec Nunc nec neque. Maecenas nec Nunc nec neque. Maecenas nec `},
+        {id:6,data:`Suspendisse non nisl sit amet velit hendrerit rutrum. Nunc nec neque. Maecenas nec odio et ante tincidunt tempus. Praesent nonummy mi in odio. Fusce egestas elit eget lorem. 1Suspendisse non nisl sit amet velit hendrerit rutrum. Nunc nec neque. Maecenas nec odio et ante tincidunt tempus. Praesent nonummy mi in odio. Fusce egestas elit eget lorem. 2`},
 
 
 
+
+
+    ].map((itm,idx) =>(
+
+        <ItemDDme
+            key={`renderItemlist-${idx}`}
+            id={itm.id}
+            movingArea={tableSize}
+            styleOnCapture={{opacity: 0.9}}
+            styleOnMove={{color:'green'}}
+            noSelect={true}
+            coordTop={10}
+            coordLeft={10}
+        >
+          Item id:{itm.id}
+          <br/>
+            {
+                itm.data
+            }
+        </ItemDDme>
+    ));
 
 
     return (<div className={`DragMeDropMe`}>
 
-        <div className={`table`}>
-
         <div
-            className={`item`}
-            style={{
-                top:positionY,
-                left:positionX
-            }}
-            onPointerDown={onDown}
-            onPointerMove={onMove}
-            onPointerUp={onUp}
-            onPointerCancel={onUp}
-            onGotPointerCapture={onGotCapture}
-            onLostPointerCapture={onLostCapture}
-        />
+            ref={tableRef}
+            className={`table`}
+            {...res}
+        >
+            {
+                debug
+                ? <div  className={`debug`}>
+                        table size: width:{ tableSize.width  } - height:{ tableSize.height  }
+                    </div>
+                    : null
+            }
+
+
+
+{
+    renderItemlist
+}
 
 
         </div>
@@ -106,6 +95,7 @@ console.log(`onMove`,e);
 };
 
 DragMeDropMe.prototype = {
+    debug:PropTypes.bool,
     callback: PropTypes.func
 };
 
