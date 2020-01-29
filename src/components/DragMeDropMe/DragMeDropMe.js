@@ -27,40 +27,23 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
     useEffect(() => {
 
         const { current:tableRefCurrent } = tableRef || {offsetWidth:0,offsetHeight:0};
-        const { children } = tableRefCurrent || [];
 
         setTableSize({
                                 width:tableRefCurrent.offsetWidth,
                                 height:tableRefCurrent.offsetHeight
                             });
 
-        if(children){
-            /*
-            setItmListData(() =>{
-
-                return children.map(itm => ({
-                    position:{
-                        top:itm.offsetTop,
-                        left:itm.offsetLeft
-                    },
-                    size:{
-                        width:itm.offsetWidth,
-                        height:itm.offsetHeight
-                    },
-
-                }));
-
-            });
-            */
-
-        }
 
 
     },[]);
 
 
 
-    const [ItemslistArr, setItemslistArr] = useState(Itemslist);
+    const [ItemslistArr, setItemslistArr] = useState(Itemslist || []);
+
+    useEffect(()=>{
+        setItemslistArr(Itemslist);
+    },[Itemslist]);
 
 
     const [zIndexItem,setZIndexItem] = useState({id:false,count:ItemslistArr.length});
@@ -69,9 +52,7 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
        setZIndexItem({count:zIndexItem.count + 1,id});
     };
 
-    const intersects = (m, s) => {
-        return (s.y0 < m.x1 && s.x1 > m.y0 && s.y1 > m.y0 && s.x0 < m.y1 && s.y1 > m.x0) ;//|| (s.y0 > m.x1 && s.y1 > m.x1);
-    };
+    const intersects = (m, s) => s.x0 <= m.x0 && s.y1 >= m.x0 && s.y0 <= m.y0 && s.x1 >= m.y0 //left top dot;
 
     const handleMoveAction = e =>{
 
@@ -91,7 +72,8 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
 
             allItmPos.push({
-                id:itmL[i].dataset.id,
+                key:i,
+                id:parseInt(itmL[i].dataset.id,10),
                 position:{
                     top,
                     left
@@ -99,8 +81,8 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
                 dots:{
                         x0:top,
                         y0:left,
-                        x1:top + width,
-                        y1:left + height
+                        x1:left + width,
+                        y1:top + height
                 },
                 size:{
                     width,
@@ -110,12 +92,53 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
 
 
-        const filtrlist = allItmPos.filter(st => intersects(e.dots,st.dots) && parseInt(st.id,10) !== parseInt(e.id,10) );
+        const filtrlist = allItmPos.filter(st => intersects(e.dots,st.dots) && parseInt(st.id,10) !== parseInt(e.id,10) ).shift();
+        const foundPositionMoved = allItmPos.filter(fn => fn.id === e.id).shift();
 
-        console.log( {m:e.dots,allItmPos,f:filtrlist, t:intersects(e.dots,allItmPos[0].dots)} );
+
+        const numSt = allItmPos.indexOf(filtrlist);
+        const numMv = allItmPos.indexOf(foundPositionMoved);
+
+       // let newItemslistArr = ItemslistArr.slice(0);
+
+        if(numSt && numSt >= 0){
+            let newItemslistArr =    ItemslistArr.map((itm,idx) =>{
+
+                if(idx === numSt){
+                    return {
+                        ...itm,
+                        style: {opacity:0.5}
+                    }
+                }
+                return {
+                    ...itm,
+                    style: {opacity:1}
+                }
 
 
-        setItmListData(allItmPos);
+            });
+
+            console.log(allItmPos.filter(st => intersects(e.dots,st.dots)));
+
+
+            setItemslistArr(newItemslistArr);
+        }
+
+
+/*
+        if(numSt >= 0 && numMv >= 0){
+
+            let  t = newItemslistArr.splice(numMv,1);
+//после того как удалите элемент из массива, у него изменится длина
+            newItemslistArr.splice(numSt,0,t[0]);
+
+            console.log({ItemslistArr,newItemslistArr,numSt,numMv,t});
+
+
+            setItemslistArr(newItemslistArr);
+        }
+
+ */
 
 
 
@@ -124,7 +147,7 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
     const renderItemlist = ItemslistArr.map((itm,idx) =>{
 
-        const {id,width,coords} = itm || false;
+        const {id,width,coords,style} = itm || false;
 
         const {top:coordTopD,left:coordLeftD} = coords || false;
 
@@ -149,7 +172,8 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
             styleOnCapture={{opacity: 0.9}}
             styleOnMove={{color:'green'}}
             style={
-                {zIndex:  zIndexItemId === id ? zIndexItemCount : 1}
+                {...style,
+                    zIndex:  zIndexItemId === id ? zIndexItemCount : 1}
                                     }
             onGotCaptureCallback={handleZindex(id)}
             onMoveCallback={handleMoveAction}

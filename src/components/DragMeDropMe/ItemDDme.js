@@ -140,8 +140,8 @@ const ItemDDme = ({
             dots:{
                     x0:newTop,
                     y0:newLeft,
-                    x1:newTop + itemSize.width,
-                    y1:newLeft + itemSize.height
+                    x1:newLeft + itemSize.width,
+                    y1:newTop + itemSize.height
             },
             size:itemSize});
 
