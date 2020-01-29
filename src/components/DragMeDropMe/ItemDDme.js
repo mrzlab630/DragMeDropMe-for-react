@@ -33,6 +33,7 @@ const ItemDDme = ({
                       onUpCallback = e => false,
                       onGotCaptureCallback = e => false,
                       onLostCaptureCallback = e => false,
+                        callback = e => false,
                       ...res
                     }) => {
 
@@ -61,8 +62,6 @@ const ItemDDme = ({
         }
 
     },[coordTop]);
-
-
 
     const [previousPositionLeft,setPreviousPositionLeft] = useState(0);
 
@@ -138,6 +137,12 @@ const ItemDDme = ({
                         top:newTop,
                         left:newLeft
                     },
+            dots:{
+                    x0:newTop,
+                    y0:newLeft,
+                    x1:newTop + itemSize.width,
+                    y1:newLeft + itemSize.height
+            },
             size:itemSize});
 
     };
@@ -216,8 +221,10 @@ const ItemDDme = ({
 
 
     return (<div
-                id={id}
                 ref={itemRef}
+                data-id={id}
+                data-positionleft={positionLeft}
+                data-positiontop={positionTop}
                 className={`item ${className || ''} ${hasCapture ? 'onCapture' : ''} ${addClassOnCapture} ${addClassOnMove} ${noSelect ? 'noSelect' : ''}`}
                 style={{
                     transform: `translate3d(${positionLeft}px, ${positionTop}px, 0)`,
@@ -271,6 +278,7 @@ ItemDDme.prototype = {
     onUpCallback: PropTypes.func,
     onGotCaptureCallback: PropTypes.func,
     onLostCaptureCallback: PropTypes.func,
+    callback: PropTypes.func,
 };
 
 
