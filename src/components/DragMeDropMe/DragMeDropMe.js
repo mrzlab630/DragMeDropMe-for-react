@@ -70,74 +70,75 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
 
 
-    const handleMoveAction = e =>{
+    const handleMoveAction = e => {
 
 
-        const {current:{children:itmL}} = tableRef || false;
+        const {current: {children: itmL}} = tableRef || false;
 
         const allItmPos = [];
 
-        for(let i = 0; i < itmL.length;i++){
+        for (let i = 0; i < itmL.length; i++) {
 
-            let top = parseInt(itmL[i].dataset.positiontop,10) || 0;
-            let left = parseInt(itmL[i].dataset.positionleft,10) || 0;
-            let width = parseInt(itmL[i].offsetWidth,10) || 0;
-            let height = parseInt(itmL[i].offsetHeight,10) || 0;
+            let top = parseInt(itmL[i].dataset.positiontop, 10) || 0;
+            let left = parseInt(itmL[i].dataset.positionleft, 10) || 0;
+            let width = parseInt(itmL[i].offsetWidth, 10) || 0;
+            let height = parseInt(itmL[i].offsetHeight, 10) || 0;
 
 
             allItmPos.push({
-                key:i,
-                id:parseInt(itmL[i].dataset.id,10),
-                position:{
+                key: i,
+                id: parseInt(itmL[i].dataset.id, 10),
+                position: {
                     top,
                     left
                 },
-                dots:{
-                        x0:top,
-                        y0:left,
-                        x1:left + width,
-                        y1:top + height,
-                        z0:left + width + height,
-                        z1:top + height + width
+                dots: {
+                    x0: top,
+                    y0: left,
+                    x1: left + width,
+                    y1: top + height,
+                    z0: left + width + height,
+                    z1: top + height + width
                 },
-                size:{
+                size: {
                     width,
                     height
-                }})
+                }
+            })
         }
 
 
+        const filtrlistAll = allItmPos.filter(st => intersects(e.dots, st.dots) && parseInt(st.id, 10) !== parseInt(e.id, 10));
+        const filtrlist = filtrlistAll[0];
+        //     const foundPositionMoved = allItmPos.filter(fn => fn.id === e.id)[0];
 
-        const filtrlist = allItmPos.filter(st => intersects(e.dots,st.dots) && parseInt(st.id,10) !== parseInt(e.id,10) ).shift();
-   //     const foundPositionMoved = allItmPos.filter(fn => fn.id === e.id).shift();
-
-        console.log({e,allItmPos});
-
-        const numSt = allItmPos.indexOf(filtrlist);
-    //    const numMv = allItmPos.indexOf(foundPositionMoved);
-
+        const numStArr = filtrlistAll.map(itm => allItmPos.indexOf(itm));
 
         let newItemslistArr;
 
-        if( numSt !== -1){
+        if (numStArr.length > 0) {
 
-             newItemslistArr =    ItemslistArr.map((itm,idx) =>{
+            newItemslistArr =  ItemslistArr.map((itm,idx) => {
 
-                if(idx === numSt){
-                    return {
-                        ...itm,
-                        style: {
-                            opacity:0.5
-                        }
-                    }
-                }
-                return {
-                    ...itm,
-                    style: false
-                }
+               let foundX = numStArr.filter(itmN => idx === itmN && itmN !== -1)[0];
 
+
+               if(typeof foundX !== "undefined"){
+                   return {
+                       ...itm,
+                       style: {
+                           opacity:0.5
+                       }
+                   }
+               }
+
+               return {
+                   ...itm,
+                   style:false
+               }
 
             });
+
 
         }else{
             newItemslistArr =    ItemslistArr.map((itm,idx) =>{
@@ -149,11 +150,15 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
 
             });
+
         }
 
         setItemslistArr(newItemslistArr);
 
+
     };
+
+
 
 
     const renderItemlist = ItemslistArr.map((itm,idx) =>{
