@@ -46,11 +46,19 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
     },[Itemslist]);
 
 
-    const [zIndexItem,setZIndexItem] = useState({id:false,count:1});
+    const [zIndexItem,setZIndexItem] = useState(1);
 
     const handleZindex = id => e =>{
-       setZIndexItem({id,count:zIndexItem.count + 1});
+
+        setItemslistArr(prev => prev.map(itm =>({
+            ...itm,
+            zIndex:itm.id === id ? zIndexItem + 1: itm.zIndex || 1
+        })));
+
+       setZIndexItem(prev => prev + 1);
     };
+
+    console.log({ItemslistArr,zIndexItem});
 
     const intersects = (m, s) => s.x0 <= m.x0 && s.y1 >= m.x0 && s.y0 <= m.y0 && s.x1 >= m.y0 //left top dot;
 
@@ -140,7 +148,7 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
     const renderItemlist = ItemslistArr.map((itm,idx) =>{
 
-        const {id,width,coords,style} = itm || false;
+        const {id,width,coords,style,zIndex} = itm || false;
 
         const {top:coordTopD,left:coordLeftD} = coords || false;
 
@@ -155,16 +163,14 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
         const testlockAreaLeftFirst = lockAreaLeft > 0 ? lockAreaLeft : 0;
 
-        const {id:zIndexItemId, count: zIndexItemCount} = zIndexItem || false;
-
         return(<ItemDDme
             key={`renderItemlist-${idx}`}
             coordTop={typeof coordTopD === 'number' ? coordTopD : 0}
             coordLeft={typeof coordLeftD === 'number' && coordLeftD >= 0 || testlockAreaLeftFirst}
             movingArea={tableSize}
-            styleOnLostCapture={{zIndex: zIndexItemCount || 1}}
-            styleOnCapture={{opacity: 0.9}}
-            styleOnMove={{color:'green',zIndex:2}}
+            styleOnLostCapture={{zIndex:  zIndex || 1}}
+            styleOnCapture={{opacity: 0.9,zIndex: zIndexItem + 1}}
+            styleOnMove={{color:'green'}}
             style={{...style}}
           onGotCaptureCallback={handleZindex(id)}
             onMoveCallback={handleMoveAction}

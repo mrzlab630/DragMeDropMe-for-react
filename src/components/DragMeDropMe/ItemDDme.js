@@ -235,7 +235,7 @@ const ItemDDme = ({
                 data-id={id}
                 data-positionleft={positionLeft}
                 data-positiontop={positionTop}
-                className={`item ${className || ''} ${hasCapture ? 'onCapture' : ''} ${addClassOnCapture} ${addClassOnMove} ${noSelect ? 'noSelect' : ''}`}
+                className={`item ${className || ''} ${hasCapture ? 'onCapture' : ''} ${addClassOnCapture} ${addClassOnLostCapture} ${addClassOnMove} ${noSelect ? 'noSelect' : ''}`}
                 style={{
                     transform: `translate3d(${positionLeft}px, ${positionTop}px, 0)`,
                     width,
