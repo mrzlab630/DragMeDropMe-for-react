@@ -25,6 +25,8 @@ const ItemDDme = ({
                           className,
                         styleOnCapture,
                         classOnCapture,
+                      styleOnLostCapture,
+                      classOnLostCapture,
                         styleOnMove,
                         classOnMove,
                         noSelect,
@@ -70,6 +72,9 @@ const ItemDDme = ({
     const [isDragging,setIsDragging] = useState(false);
 
     const [hasCapture,setHasCapture] = useState(false);
+
+    const [isLostCapture,setIsLostCapture] = useState(false);
+
 
 
     const extractPositionDelta = e =>{
@@ -177,6 +182,7 @@ const ItemDDme = ({
 
     const onLostCapture = e => {
 
+        setIsLostCapture(true);
         setHasCapture(false);
 
         onLostCaptureCallback({
@@ -215,9 +221,13 @@ const ItemDDme = ({
     const addStyleOnCapture = hasCapture && styleOnCapture ? styleOnCapture : null;
     const addClassOnCapture = hasCapture && classOnCapture ? classOnCapture : '';
 
+    const addStyleOnLostCapture = isLostCapture && styleOnLostCapture ? styleOnLostCapture : null;
+    const addClassOnLostCapture = isLostCapture && classOnLostCapture ? classOnLostCapture : '';
+
 
     const addStyleOnMove = isDragging && styleOnMove ? styleOnMove : null;
     const addClassOnMove = isDragging && classOnMove ? classOnMove : '';
+
 
 
     return (<div
@@ -231,6 +241,7 @@ const ItemDDme = ({
                     width,
                     ...style,
                     ...addStyleOnCapture,
+                    ...addStyleOnLostCapture,
                     ...addStyleOnMove,
                 }}
                 onPointerDown={onDown}

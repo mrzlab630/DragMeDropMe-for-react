@@ -46,18 +46,16 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
     },[Itemslist]);
 
 
-    const [zIndexItem,setZIndexItem] = useState({id:false,count:ItemslistArr.length});
+    const [zIndexItem,setZIndexItem] = useState({id:false,count:1});
 
     const handleZindex = id => e =>{
-       setZIndexItem({count:zIndexItem.count + 1,id});
+       setZIndexItem({id,count:zIndexItem.count + 1});
     };
 
     const intersects = (m, s) => s.x0 <= m.x0 && s.y1 >= m.x0 && s.y0 <= m.y0 && s.x1 >= m.y0 //left top dot;
 
     const handleMoveAction = e =>{
 
-
-//setItmListData
 
         const {current:{children:itmL}} = tableRef || false;
 
@@ -99,48 +97,43 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
         const numSt = allItmPos.indexOf(filtrlist);
         const numMv = allItmPos.indexOf(foundPositionMoved);
 
-       // let newItemslistArr = ItemslistArr.slice(0);
 
-        if(numSt && numSt >= 0){
-            let newItemslistArr =    ItemslistArr.map((itm,idx) =>{
+        let newItemslistArr;
+
+        if( numSt !== -1){
+
+             newItemslistArr =    ItemslistArr.map((itm,idx) =>{
 
                 if(idx === numSt){
                     return {
                         ...itm,
-                        style: {opacity:0.5}
+                        style: {
+                            opacity:0.5
+                        }
                     }
                 }
                 return {
                     ...itm,
-                    style: {opacity:1}
+                    style: false
                 }
 
 
             });
 
-            console.log(allItmPos.filter(st => intersects(e.dots,st.dots)));
+        }else{
+            newItemslistArr =    ItemslistArr.map((itm,idx) =>{
+
+                return {
+                    ...itm,
+                    style: false
+                }
 
 
-            setItemslistArr(newItemslistArr);
+            });
         }
 
 
-/*
-        if(numSt >= 0 && numMv >= 0){
-
-            let  t = newItemslistArr.splice(numMv,1);
-//после того как удалите элемент из массива, у него изменится длина
-            newItemslistArr.splice(numSt,0,t[0]);
-
-            console.log({ItemslistArr,newItemslistArr,numSt,numMv,t});
-
-
-            setItemslistArr(newItemslistArr);
-        }
-
- */
-
-
+        setItemslistArr(newItemslistArr);
 
     };
 
@@ -169,13 +162,11 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
             coordTop={typeof coordTopD === 'number' ? coordTopD : 0}
             coordLeft={typeof coordLeftD === 'number' && coordLeftD >= 0 || testlockAreaLeftFirst}
             movingArea={tableSize}
+            styleOnLostCapture={{zIndex: zIndexItemCount || 1}}
             styleOnCapture={{opacity: 0.9}}
-            styleOnMove={{color:'green'}}
-            style={
-                {...style,
-                    zIndex:  zIndexItemId === id ? zIndexItemCount : 1}
-                                    }
-            onGotCaptureCallback={handleZindex(id)}
+            styleOnMove={{color:'green',zIndex:2}}
+            style={{...style}}
+          onGotCaptureCallback={handleZindex(id)}
             onMoveCallback={handleMoveAction}
             noSelect={true}
 
