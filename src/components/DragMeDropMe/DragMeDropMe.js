@@ -58,9 +58,17 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
        setZIndexItem(prev => prev + 1);
     };
 
-    console.log({ItemslistArr,zIndexItem});
 
-    const intersects = (m, s) => s.x0 <= m.x0 && s.y1 >= m.x0 && s.y0 <= m.y0 && s.x1 >= m.y0 //left top dot;
+
+    const intersects = (m, s) => s.y0 <= m.x1 && s.x1 >= m.y0 && s.x0 <= m.y1 && s.y1 >= m.x0
+                            /*
+                                s.x0 <= m.x0 && s.y1 >= m.x0 && s.y0 <= m.y0 && s.x1 >= m.y0 //left top corner;
+                             || s.y0 <= m.x1 && s.x1 >= m.x1 && s.x0 <= m.x0 && s.y1 >= m.x0 //right top corner
+                             || s.y1 >= m.y1 && s.x0 <= m.y1 && s.y0 <= m.y0 && s.x1 >= m.y0; // left bottom corner
+                             */
+
+
+
 
     const handleMoveAction = e =>{
 
@@ -88,7 +96,9 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
                         x0:top,
                         y0:left,
                         x1:left + width,
-                        y1:top + height
+                        y1:top + height,
+                        z0:left + width + height,
+                        z1:top + height + width
                 },
                 size:{
                     width,
@@ -99,11 +109,12 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
 
         const filtrlist = allItmPos.filter(st => intersects(e.dots,st.dots) && parseInt(st.id,10) !== parseInt(e.id,10) ).shift();
-        const foundPositionMoved = allItmPos.filter(fn => fn.id === e.id).shift();
+   //     const foundPositionMoved = allItmPos.filter(fn => fn.id === e.id).shift();
 
+        console.log({e,allItmPos});
 
         const numSt = allItmPos.indexOf(filtrlist);
-        const numMv = allItmPos.indexOf(foundPositionMoved);
+    //    const numMv = allItmPos.indexOf(foundPositionMoved);
 
 
         let newItemslistArr;
@@ -139,7 +150,6 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
             });
         }
-
 
         setItemslistArr(newItemslistArr);
 

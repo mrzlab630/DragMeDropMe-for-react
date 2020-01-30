@@ -139,14 +139,16 @@ const ItemDDme = ({
             onMove:true,
             id,
             position:{
-                        top:newTop,
+                top:newTop,
                         left:newLeft
                     },
             dots:{
                     x0:newTop,
                     y0:newLeft,
                     x1:newLeft + itemSize.width,
-                    y1:newTop + itemSize.height
+                    y1:newTop + itemSize.height,
+                    z0:newLeft + itemSize.width + itemSize.height,
+                    z1:newTop + itemSize.height + itemSize.width
             },
             size:itemSize});
 
