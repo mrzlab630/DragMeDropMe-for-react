@@ -1,7 +1,7 @@
 # Drag and Drop components for React.Js
 
 
-
+### [DEMO](https://mrzlab630.github.io/DragMeDropMe-for-react/)
 
 ## Development
 
@@ -105,6 +105,7 @@ children
 ### DragMe
 
 status: **in progress...**
+
 uses: **react-motion,lodash.range**
 
 import **DragMe** and **DropMe** from **src/components/DragMe**
