@@ -11,13 +11,17 @@ import React from "react";
 import './App.scss';
 
 import {DragMeDropMe,ItemDDme} from '../DragMeDropMe';
+import {
+    DragMe,
+    DropMe,
+} from "../DragMe";
 
 
 
 const App = () => {
 
 
-    const itemslist = [
+    const itemslistForDragMeDropMe = [
         {id:6,
             width:150,
             coords:{top:140,left:false},
@@ -75,20 +79,29 @@ const App = () => {
     ];
 
 
-
     return (<>
+    <h3>DragMeDropMe -- free</h3>
 
         <ItemDDme
-            style={{background:`blue`,color:`green`,zIndex:999,width:100,position:`absolute`}}
+            noSelect={true}
+            style={{
+                background:`blue`,
+                color:`green`,
+                zIndex:999,
+                width:100,
+                position:`absolute`,
+                padding: 10,
+                textAlign: `center`,
+                border: `1px solid black`}}
        >
             Drag me!
         </ItemDDme>
 
    <DragMeDropMe
-       size={{width:`90%`,height:`90%`}}
+       size={{width:`90%`,height:`68%`,left: `5%`}}
        styleFoItms={{background:`blue`}}
        shadowEffect={ {filter:`blur(1px)`}}
-       itemslist={itemslist}
+       itemslist={itemslistForDragMeDropMe}
        callback={e => console.log(1)}
    >
        Phasellus magna. Suspendisse eu ligula.
@@ -98,7 +111,63 @@ const App = () => {
        Quisque malesuada placerat nisl. Nullam nulla eros, ultricies sit amet, nonummy id, imperdiet feugiat, pede.
    </DragMeDropMe>
 
-    </>);
+<div
+    style={{
+        position: `absolute`,
+        bottom: 10,
+        top: `73%`,
+    }}
+>
+
+    <h3>DropMe -- line</h3>
+
+
+        <DropMe
+            columns={3}
+            wrapperWidth={500}
+            height={10}
+            callback={e => console.log(e)}
+        >
+            <DragMe
+                id={1}
+                height={200}
+                shadow={true}
+            >
+                <div>
+                    Curabitur blandit mollis lacus. Praesent nonummy mi in odio. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi. Praesent ac sem eget est egestas volutpat.
+                </div>
+            </DragMe>
+
+            <DragMe
+                id={2}
+                height={250}
+                shadow={true}
+            >
+                <div>
+                    Curabitur blandit mollis lacus. Praesent nonummy mi in odio. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi. Praesent ac sem eget est egestas volutpat.
+                </div>
+            </DragMe>
+
+            <DragMe
+                id={3}
+                height={200}
+                shadow={true}
+            >
+                <div>
+                    Curabitur blandit mollis lacus. Praesent nonummy mi in odio. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi. Praesent ac sem eget est egestas volutpat.
+                </div>
+            </DragMe>
+
+        </DropMe>
+</div>
+        </>);
+
+
+
+
+
+
+
 };
 
 

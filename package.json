@@ -24,8 +24,10 @@
     "extends": "react-app"
   },
   "dependencies": {
+    "lodash.range": "^3.2.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-motion": "^0.5.2",
     "react-scripts": "^3.3.0"
   },
   "devDependencies": {

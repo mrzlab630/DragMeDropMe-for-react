@@ -7,10 +7,10 @@ import React, {useState, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import {Motion, spring} from 'react-motion';
 import range from 'lodash.range';
-import useStyles from './useStyles';
 
-import useForceUpdate from 'use-force-update';
-//import useCalcHeight from './useCalcHeight';
+import './DropMe.scss';
+
+
 
 
 
@@ -32,17 +32,14 @@ const allColors = [
 ];
 
 const DropMe = ({columns=3,
-                    style,
                     children,
                   wrapperWidth,
                     height,
-                    colorBack,
                     callback,
                     ...res}) =>{
 
 
 
-    const classes = useStyles();
 
     //анимация
     const springSetting1 = {stiffness: 180, damping: 10};
@@ -67,41 +64,6 @@ const DropMe = ({columns=3,
     const [heightArr, setHeightArr] = useState([]);
 
 
-    const forceUpdate = useForceUpdate();
-
-    const calcHeight = node =>{
-
-        const {id,offsetHeight} = node || false;
-
- if(!id || !offsetHeight){
-return false
- }
-
-
- const newitemsBlocks = itemsBlocks.map(itm =>{
-
-     const {props,type} = itm || false;
-     const {shadow,id:itmId,weight} = props || false;
-
-     if(parseInt(itmId,10) === parseInt(id,10)){
-
-         return {
-             ...itm,
-             height:offsetHeight
-         }
-     }
-     return itm;
-
- }).filter(el => el);
-
-// console.log({id,height:offsetHeight});
-
-    //    setHeightArr({id,height:offsetHeight});
-
-      //  setItemsBlocks([...itemsBlocks,newitemsBlocks]);
-      //  forceUpdate();
-
-    };
 
 
 
@@ -232,13 +194,12 @@ return false
 
 
     return( <div
-                style={style}
-                className={classes.wrapper}>
+                className={`DropMe`}>
         {
             itemsBlocks && Array.isArray(itemsBlocks) ? itemsBlocks.map((itm, key)=>{
 
                 const {props,type} = itm || false;
-                const {shadow,id,weight,height} = props || false;
+                const {shadow,id,height} = props || false;
 
 
 
@@ -279,16 +240,15 @@ return false
                     <Motion key={key} style={styleQ}>
                         {({translateX, translateY, scale, boxShadow}) =>
                             <div
-                               // ref={(node) => calcHeight(node)}
                                 id={id}
-                                className={classes.item}
+                                className={`item`}
                                 key={`renderBlocks-${key}`}
                                 onMouseDown={onMouseDown(key, [x, y])}
                                 onTouchStart={onTouchStart(key, [x, y])}
                                 style={{
                                     width,
                                     height,
-                                    backgroundColor: colorBack ? allColors[key] : `none`,
+                                    backgroundColor: allColors[key],
                                     transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`,
                                     zIndex: key === lastPress ? 99 : visualPosition,
                                     boxShadow: `${boxShadow}px 5px 5px rgba(0,0,0,0.5)`,
@@ -307,11 +267,9 @@ return false
 
 DropMe.prototype ={
     columns:PropTypes.number,
-    style:PropTypes.object,
     children:PropTypes.array,
     wrapperWidth:PropTypes.number,
     height:PropTypes.number,
-    colorBack:PropTypes.bool,
     callback:PropTypes.func,
 };
 

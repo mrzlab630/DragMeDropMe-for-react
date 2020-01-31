@@ -20,6 +20,8 @@ open **http://localhost:3000**
 <br>
 <br>
 
+## Components
+
 ### DragMeDropMe
 
 import **DragMeDropMe** or **ItemDDme** from **src/components/DragMeDropMe**
@@ -100,6 +102,18 @@ callback,
 
 children
 
+### DragMe
+
+status: **in progress...**
+
+
+import **DragMe** and **DropMe** from **src/components/DragMe**
+
+###### see example: src/components/App/App.js
+
+
+<br>
+<br>
 
 
 ## Donation

@@ -216,12 +216,15 @@ const DragMeDropMe = ({debug,
     });
 
 
-    return (<div className={`DragMeDropMe`}>
+    return (<div
+        style={size}
+        className={`DragMeDropMe`}
+    >
 
         <div
             ref={tableRef}
             className={`table`}
-            style={size}
+
             {...res}
         >
             {

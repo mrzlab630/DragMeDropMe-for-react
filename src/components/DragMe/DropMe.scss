@@ -1,0 +1,19 @@
+.DropMe{
+
+    user-select: none;
+
+
+  & .item{
+    position: absolute;
+    cursor: pointer;
+    margin: auto;
+    user-select: none;
+  }
+
+  & img{
+    user-select: none;
+    pointer-events: none;
+  }
+
+
+}
