@@ -1,12 +1,6 @@
-## DragMeDropMe
-
-<br>
-<br>
-
-### Drag and Drop component for React.Js
+# Drag and Drop components for React.Js
 
 
-in progress...
 
 
 ## Development
@@ -25,6 +19,87 @@ open **http://localhost:3000**
 
 <br>
 <br>
+
+### DragMeDropMe
+
+import **DragMeDropMe** or **ItemDDme** from **src/components/DragMeDropMe**
+
+###### see example: examples/DragMeDropMe.js
+
+
+#### PROPS
+
+###### ItemDDme
+
+**Single component with free movement**
+
+id,
+
+debug,
+
+coordTop,
+
+coordLeft,
+
+width,
+
+movingArea,
+
+children,
+
+style,
+
+className,
+
+styleOnCapture,
+
+classOnCapture,
+
+styleOnLostCapture,
+
+classOnLostCapture,
+
+styleOnMove,
+
+classOnMove,
+
+noSelect,
+
+onMoveCallback,
+
+onDownCallback,
+
+onUpCallback,
+
+onGotCaptureCallback,
+
+onLostCaptureCallback
+
+
+###### DragMeDropMe
+
+**Area with a set of components**
+
+debug,
+
+size = {width:`90%`,height:`90%`} -- style % or px,
+
+itemslist,
+
+defaultWidthItem,
+
+columnOffsetLeft,
+
+shadowEffect,
+
+styleFoItms,
+
+classFoItms,
+
+callback,
+
+children
+
 
 
 ## Donation

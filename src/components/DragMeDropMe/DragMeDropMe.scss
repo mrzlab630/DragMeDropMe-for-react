@@ -24,14 +24,17 @@
 
   & .table{
     background: #2196F3;
-    height: 90%;
-    width: 90%;
     overflow-x: hidden;
     -ms-overflow-x: hidden;
     overflow-y: auto;
     -ms-overflow-y:auto;
 
     position: relative;
+
+    & .info{
+      position: absolute;
+      z-index: 1;
+    }
 
   }
 
@@ -52,10 +55,6 @@
 
     width: 150px;
     min-height: 50px;
-
-    background-color: tomato;
-    color: aliceblue;
-    border: 3px solid black;
 
   }
 

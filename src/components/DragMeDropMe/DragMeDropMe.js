@@ -14,13 +14,21 @@ import './DragMeDropMe.scss';
 
 import ItemDDme from './ItemDDme';
 
-const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft = 10,callback, ...res}) => {
+const DragMeDropMe = ({debug,
+                            size={width:`80%`,height:`80%`},
+                          itemslist,
+                          defaultWidthItem = 150,
+                          columnOffsetLeft = 10,
+                          shadowEffect={opacity:0.7},
+                          styleFoItms,
+                          classFoItms,
+                          callback,
+                          children,
+                          ...res}) => {
 
     const tableRef = useRef(null);
 
     const [tableSize,setTableSize] = useState({width:0,height:0});
-
-    const [itmListData, setItmListData] = useState(null);
 
 
 
@@ -28,22 +36,27 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
         const { current:tableRefCurrent } = tableRef || {offsetWidth:0,offsetHeight:0};
 
+
+
         setTableSize({
                                 width:tableRefCurrent.offsetWidth,
                                 height:tableRefCurrent.offsetHeight
                             });
 
-
+        window.addEventListener('resize', (event) => setTableSize({
+                                                                                                width:tableRefCurrent.offsetWidth,
+                                                                                                height:tableRefCurrent.offsetHeight
+                                                                                            }));
 
     },[]);
 
 
 
-    const [ItemslistArr, setItemslistArr] = useState(Itemslist || []);
+    const [itemslistArr, setItemslistArr] = useState(itemslist || []);
 
     useEffect(()=>{
-        setItemslistArr(Itemslist);
-    },[Itemslist]);
+        setItemslistArr(itemslist);
+    },[itemslist]);
 
 
     const [zIndexItem,setZIndexItem] = useState(1);
@@ -60,14 +73,12 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
 
 
-    const intersects = (m, s) => s.y0 <= m.x1 && s.x1 >= m.y0 && s.x0 <= m.y1 && s.y1 >= m.x0
+    const intersects = (m, s) => s.y0 <= m.x1 && s.x1 >= m.y0 && s.x0 <= m.y1 && s.y1 >= m.x0;
                             /*
                                 s.x0 <= m.x0 && s.y1 >= m.x0 && s.y0 <= m.y0 && s.x1 >= m.y0 //left top corner;
                              || s.y0 <= m.x1 && s.x1 >= m.x1 && s.x0 <= m.x0 && s.y1 >= m.x0 //right top corner
                              || s.y1 >= m.y1 && s.x0 <= m.y1 && s.y0 <= m.y0 && s.x1 >= m.y0; // left bottom corner
                              */
-
-
 
 
     const handleMoveAction = e => {
@@ -84,32 +95,33 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
             let width = parseInt(itmL[i].offsetWidth, 10) || 0;
             let height = parseInt(itmL[i].offsetHeight, 10) || 0;
 
+            if(itmL[i].dataset.id){
+                allItmPos.push({
+                    id: parseInt(itmL[i].dataset.id, 10),
+                    position: {
+                        top,
+                        left
+                    },
+                    dots: {
+                        x0: top,
+                        y0: left,
+                        x1: left + width,
+                        y1: top + height,
+                        z0: left + width + height,
+                        z1: top + height + width
+                    },
+                    size: {
+                        width,
+                        height
+                    }
+                })
+            }
 
-            allItmPos.push({
-                key: i,
-                id: parseInt(itmL[i].dataset.id, 10),
-                position: {
-                    top,
-                    left
-                },
-                dots: {
-                    x0: top,
-                    y0: left,
-                    x1: left + width,
-                    y1: top + height,
-                    z0: left + width + height,
-                    z1: top + height + width
-                },
-                size: {
-                    width,
-                    height
-                }
-            })
         }
 
 
         const filtrlistAll = allItmPos.filter(st => intersects(e.dots, st.dots) && parseInt(st.id, 10) !== parseInt(e.id, 10));
-        const filtrlist = filtrlistAll[0];
+       // const filtrlist = filtrlistAll[0];
         //     const foundPositionMoved = allItmPos.filter(fn => fn.id === e.id)[0];
 
         const numStArr = filtrlistAll.map(itm => allItmPos.indexOf(itm));
@@ -118,7 +130,7 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
         if (numStArr.length > 0) {
 
-            newItemslistArr =  ItemslistArr.map((itm,idx) => {
+            newItemslistArr =  itemslistArr.map((itm,idx) => {
 
                let foundX = numStArr.filter(itmN => idx === itmN && itmN !== -1)[0];
 
@@ -126,26 +138,26 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
                if(typeof foundX !== "undefined"){
                    return {
                        ...itm,
-                       style: {
-                           opacity:0.5
+                       styleShadowEffect: {
+                           ...shadowEffect
                        }
                    }
                }
 
                return {
                    ...itm,
-                   style:false
+                   styleShadowEffect:false
                }
 
             });
 
 
         }else{
-            newItemslistArr =    ItemslistArr.map((itm,idx) =>{
+            newItemslistArr =    itemslistArr.map((itm,idx) =>{
 
                 return {
                     ...itm,
-                    style: false
+                    styleShadowEffect: false
                 }
 
 
@@ -153,21 +165,23 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
 
         }
 
-        setItemslistArr(newItemslistArr);
+        console.log({newItemslistArr,allItmPos});
 
+        setItemslistArr(newItemslistArr);
+        callback(allItmPos);
 
     };
 
 
 
 
-    const renderItemlist = ItemslistArr.map((itm,idx) =>{
+    const renderItemlist = itemslistArr.map((itm,idx) =>{
 
-        const {id,width,coords,style,zIndex} = itm || false;
+        const {id,width,coords,style,zIndex,noSelect,styleOnCapture,styleOnMove,styleOnLostCapture,styleShadowEffect} = itm || false;
 
         const {top:coordTopD,left:coordLeftD} = coords || false;
 
-        const coordLeft = Itemslist
+        const coordLeft = itemslist
                                     .slice(0,idx)
                                     .reduce((sum, current) => {
                                     const {width:currentW} = current || defaultWidthItem;
@@ -181,20 +195,19 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
         return(<ItemDDme
             key={`renderItemlist-${idx}`}
             coordTop={typeof coordTopD === 'number' ? coordTopD : 0}
-            coordLeft={typeof coordLeftD === 'number' && coordLeftD >= 0 || testlockAreaLeftFirst}
+            coordLeft={typeof coordLeftD === 'number' && coordLeftD >= 0 ? coordLeftD : testlockAreaLeftFirst}
             movingArea={tableSize}
-            styleOnLostCapture={{zIndex:  zIndex || 1}}
-            styleOnCapture={{opacity: 0.9,zIndex: zIndexItem + 1}}
-            styleOnMove={{color:'green'}}
-            style={{...style}}
+            className={classFoItms}
+            styleOnLostCapture={{...styleOnLostCapture,zIndex:  zIndex || 1}}
+            styleOnCapture={{...styleOnCapture,zIndex: zIndexItem + 1}}
+            styleOnMove={styleOnMove}
+            style={{...styleFoItms,...style,...styleShadowEffect}}
           onGotCaptureCallback={handleZindex(id)}
             onMoveCallback={handleMoveAction}
-            noSelect={true}
+            noSelect={noSelect}
 
             {...{width,id}}
         >
-            Item id:{itm.id}
-            <br/>
             {
                 itm.data
             }
@@ -208,6 +221,7 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
         <div
             ref={tableRef}
             className={`table`}
+            style={size}
             {...res}
         >
             {
@@ -217,27 +231,28 @@ const DragMeDropMe = ({debug,Itemslist,defaultWidthItem = 150,columnOffsetLeft =
                     </div>
                     : null
             }
-
-
-
-{
-    renderItemlist
-}
-
-
+            <div className={`info`} dangerouslySetInnerHTML={{__html: children}}/>
+            {
+                renderItemlist
+            }
         </div>
-
-
-
     </div>);
 };
 
+
+
+
 DragMeDropMe.prototype = {
+    size:PropTypes.object,
     debug:PropTypes.bool,
-    Itemslist:PropTypes.array,
+    shadowEffect:PropTypes.object,
+    itemslist:PropTypes.array,
     defaultWidthItem:PropTypes.number,
     columnOffsetLeft:PropTypes.number,
-    callback: PropTypes.func
+    callback: PropTypes.func,
+    styleFoItms:PropTypes.object,
+    classFoItms:PropTypes.string,
+    children:PropTypes.node
 };
 
 

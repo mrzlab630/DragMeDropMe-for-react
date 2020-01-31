@@ -8,13 +8,13 @@
  *
  */
 import React from "react";
-import './App.scss';
+
 
 import {DragMeDropMe,ItemDDme} from '../DragMeDropMe';
 
 
 
-const App = () => {
+const DragMeDropMe = () => {
 
 
     const itemslist = [
@@ -80,26 +80,25 @@ const App = () => {
 
         <ItemDDme
             style={{background:`blue`,color:`green`,zIndex:999,width:100,position:`absolute`}}
-       >
+        >
             Drag me!
         </ItemDDme>
 
-   <DragMeDropMe
-       size={{width:`90%`,height:`90%`}}
-       styleFoItms={{background:`blue`}}
-       shadowEffect={ {filter:`blur(1px)`}}
-       itemslist={itemslist}
-       callback={e => console.log(1)}
-   >
-       Phasellus magna. Suspendisse eu ligula.
+        <DragMeDropMe
+            styleFoItms={{background:`blue`}}
+            shadowEffect={ {filter:`blur(1px)`}}
+            itemslist={itemslist}
+            callback={e => console.log(1)}
+        >
+            Phasellus magna. Suspendisse eu ligula.
 
-       Vestibulum volutpat pretium libero. Integer tincidunt.
+            Vestibulum volutpat pretium libero. Integer tincidunt.
 
-       Quisque malesuada placerat nisl. Nullam nulla eros, ultricies sit amet, nonummy id, imperdiet feugiat, pede.
-   </DragMeDropMe>
+            Quisque malesuada placerat nisl. Nullam nulla eros, ultricies sit amet, nonummy id, imperdiet feugiat, pede.
+        </DragMeDropMe>
 
     </>);
 };
 
 
-export default App;
+export default DragMeDropMe.js;

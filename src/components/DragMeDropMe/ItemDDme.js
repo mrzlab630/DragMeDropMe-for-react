@@ -35,7 +35,6 @@ const ItemDDme = ({
                       onUpCallback = e => false,
                       onGotCaptureCallback = e => false,
                       onLostCaptureCallback = e => false,
-                        callback = e => false,
                       ...res
                     }) => {
 
@@ -54,16 +53,13 @@ const ItemDDme = ({
         if(coordLeft){
             setPositionLeft(coordLeft);
         }
-
-    },[coordLeft]);
-
-    useEffect(() =>{
-
         if(coordTop){
             setPositionTop(coordTop);
         }
 
-    },[coordTop]);
+    },[coordLeft,coordTop]);
+
+
 
     const [previousPositionLeft,setPreviousPositionLeft] = useState(0);
 
@@ -74,7 +70,6 @@ const ItemDDme = ({
     const [hasCapture,setHasCapture] = useState(false);
 
     const [isLostCapture,setIsLostCapture] = useState(false);
-
 
 
     const extractPositionDelta = e =>{
@@ -107,6 +102,14 @@ const ItemDDme = ({
                             top:positionTop,
                             left:positionLeft
                         },
+                         dots:{
+                             x0:positionTop,
+                             y0:positionLeft,
+                             x1:positionLeft + itemSize.width,
+                             y1:positionTop + itemSize.height,
+                             z0:positionLeft + itemSize.width + itemSize.height,
+                             z1:positionTop + itemSize.height + itemSize.width
+                         },
                         size:itemSize});
 
     };
@@ -139,7 +142,7 @@ const ItemDDme = ({
             onMove:true,
             id,
             position:{
-                top:newTop,
+                        top:newTop,
                         left:newLeft
                     },
             dots:{
@@ -165,6 +168,14 @@ const ItemDDme = ({
                 top:positionTop,
                 left:positionLeft
             },
+            dots:{
+                x0:positionTop,
+                y0:positionLeft,
+                x1:positionLeft + itemSize.width,
+                y1:positionTop + itemSize.height,
+                z0:positionLeft + itemSize.width + itemSize.height,
+                z1:positionTop + itemSize.height + itemSize.width
+            },
             size:itemSize});
     };
 
@@ -179,6 +190,14 @@ const ItemDDme = ({
                                     top:positionTop,
                                     left:positionLeft
                                 },
+                                dots:{
+                x0:positionTop,
+                y0:positionLeft,
+                x1:positionLeft + itemSize.width,
+                y1:positionTop + itemSize.height,
+                z0:positionLeft + itemSize.width + itemSize.height,
+                z1:positionTop + itemSize.height + itemSize.width
+            },
                                 size:itemSize});
     };
 
@@ -194,6 +213,14 @@ const ItemDDme = ({
                                     top:positionTop,
                                     left:positionLeft
                                 },
+                                dots:{
+                x0:positionTop,
+                y0:positionLeft,
+                x1:positionLeft + itemSize.width,
+                y1:positionTop + itemSize.height,
+                z0:positionLeft + itemSize.width + itemSize.height,
+                z1:positionTop + itemSize.height + itemSize.width
+            },
                                 size:itemSize});
 
     };
@@ -263,7 +290,8 @@ const ItemDDme = ({
                 </div>
                 : null
         }
-                {children}
+
+        <div dangerouslySetInnerHTML={{__html: children}}/>
 
             </div>);
 };
@@ -290,8 +318,7 @@ ItemDDme.prototype = {
     onDownCallback: PropTypes.func,
     onUpCallback: PropTypes.func,
     onGotCaptureCallback: PropTypes.func,
-    onLostCaptureCallback: PropTypes.func,
-    callback: PropTypes.func,
+    onLostCaptureCallback: PropTypes.func
 };
 
 
